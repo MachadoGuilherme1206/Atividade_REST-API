@@ -1,0 +1,576 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-09-27T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v8.0.0",
+  "resources": [
+    {
+      "_id": "wrk_ordens_api",
+      "_type": "workspace",
+      "parentId": null,
+      "name": "API Controle de Producao",
+      "description": "Ordens de producao e relatorios consolidados. Servidor em http://localhost:3000",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_ordens_base",
+      "_type": "environment",
+      "parentId": "wrk_ordens_api",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3000"
+      },
+      "metaSortKey": 0
+    },
+    {
+      "_id": "fld_ordens",
+      "_type": "request_group",
+      "parentId": "wrk_ordens_api",
+      "name": "Ordens",
+      "description": "CRUD do recurso /ordens",
+      "environment": {},
+      "metaSortKey": -1000
+    },
+    {
+      "_id": "fld_filtros",
+      "_type": "request_group",
+      "parentId": "wrk_ordens_api",
+      "name": "Filtros",
+      "description": "GET /ordens com filtros por tipo e alerta",
+      "environment": {},
+      "metaSortKey": -900
+    },
+    {
+      "_id": "fld_validacoes",
+      "_type": "request_group",
+      "parentId": "wrk_ordens_api",
+      "name": "Validacoes",
+      "description": "Casos que devem retornar 400 ou 404",
+      "environment": {},
+      "metaSortKey": -800
+    },
+    {
+      "_id": "fld_relatorios",
+      "_type": "request_group",
+      "parentId": "wrk_ordens_api",
+      "name": "Relatorios",
+      "description": "Relatorio consolidado",
+      "environment": {},
+      "metaSortKey": -700
+    },
+    {
+      "_id": "req_post_premium",
+      "_type": "request",
+      "parentId": "fld_ordens",
+      "name": "1. POST criar ordem (Premium, tipo 2)",
+      "description": "Espera 201. Tipo 2 aplica +10%: custoUnitarioAjustado 88, custoTotal 264000, estoqueFinal 6000 e alertaEstoque ALTO (acima de 5000).",
+      "method": "POST",
+      "url": "{{ _.base_url }}/ordens",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigoOrdem\": \"OP100\",\n  \"codigoProduto\": \"PROD-A\",\n  \"tipoProduto\": 2,\n  \"quantidadeProduzida\": 3000,\n  \"custoUnitarioBase\": 80,\n  \"estoqueInicial\": 3000\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -1000000
+    },
+    {
+      "_id": "req_post_padrao",
+      "_type": "request",
+      "parentId": "fld_ordens",
+      "name": "2. POST criar ordem (Padrao, tipo 1)",
+      "description": "Espera 201. Tipo 1 nao ajusta o custo: custoUnitarioAjustado 10, custoTotal 6000, estoqueFinal 1000 e alertaEstoque NORMAL.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/ordens",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigoOrdem\": \"OP101\",\n  \"codigoProduto\": \"PROD-B\",\n  \"tipoProduto\": 1,\n  \"quantidadeProduzida\": 600,\n  \"custoUnitarioBase\": 10,\n  \"estoqueInicial\": 400\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -999000
+    },
+    {
+      "_id": "req_post_encomenda",
+      "_type": "request",
+      "parentId": "fld_ordens",
+      "name": "3. POST criar ordem (Sob encomenda, tipo 3)",
+      "description": "Espera 201. Tipo 3 aplica +20%: custoUnitarioAjustado 240, custoTotal 12000, estoqueFinal 150 e alertaEstoque CRITICO (abaixo de 500).",
+      "method": "POST",
+      "url": "{{ _.base_url }}/ordens",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigoOrdem\": \"OP102\",\n  \"codigoProduto\": \"PROD-C\",\n  \"tipoProduto\": 3,\n  \"quantidadeProduzida\": 50,\n  \"custoUnitarioBase\": 200,\n  \"estoqueInicial\": 100\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -998000
+    },
+    {
+      "_id": "req_get_all",
+      "_type": "request",
+      "parentId": "fld_ordens",
+      "name": "4. GET listar todas as ordens",
+      "description": "Espera 200 com o array de ordens.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/ordens",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -997000
+    },
+    {
+      "_id": "req_get_one",
+      "_type": "request",
+      "parentId": "fld_ordens",
+      "name": "5. GET buscar ordem por codigo",
+      "description": "Espera 200 com os dados da ordem OP100.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/ordens/OP100",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -996000
+    },
+    {
+      "_id": "req_put_parcial",
+      "_type": "request",
+      "parentId": "fld_ordens",
+      "name": "6. PUT atualizacao parcial",
+      "description": "Espera 200. Os campos nao enviados mantem o valor atual; os calculados sao refeitos: estoqueFinal 3100, custoTotal 8800 e alertaEstoque passa de ALTO para NORMAL.",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/ordens/OP100",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"quantidadeProduzida\": 100\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -995000
+    },
+    {
+      "_id": "req_put_completo",
+      "_type": "request",
+      "parentId": "fld_ordens",
+      "name": "7. PUT atualizacao completa",
+      "description": "Espera 200. Tipo 3 recalcula o custo ajustado para 120 e o custoTotal para 24000.",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/ordens/OP100",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigoProduto\": \"PROD-Z\",\n  \"tipoProduto\": 3,\n  \"quantidadeProduzida\": 200,\n  \"custoUnitarioBase\": 100,\n  \"estoqueInicial\": 500\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -994000
+    },
+    {
+      "_id": "req_delete",
+      "_type": "request",
+      "parentId": "fld_ordens",
+      "name": "8. DELETE remover ordem",
+      "description": "Espera 200. Depois disso a ordem deixa de aparecer na listagem e no relatorio.",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/ordens/OP100",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -993000
+    },
+    {
+      "_id": "req_filtro_tipo",
+      "_type": "request",
+      "parentId": "fld_filtros",
+      "name": "GET ?tipo=2 (somente Premium)",
+      "description": "Espera 200 com apenas as ordens de tipoProduto 2.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/ordens?tipo=2",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -992000
+    },
+    {
+      "_id": "req_filtro_alerta",
+      "_type": "request",
+      "parentId": "fld_filtros",
+      "name": "GET ?alerta=ALTO",
+      "description": "Espera 200 com apenas as ordens de alertaEstoque ALTO.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/ordens?alerta=ALTO",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -991000
+    },
+    {
+      "_id": "req_filtro_minusculo",
+      "_type": "request",
+      "parentId": "fld_filtros",
+      "name": "GET ?alerta=critico (minusculo)",
+      "description": "Espera 200. O filtro nao diferencia maiusculas de minusculas.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/ordens?alerta=critico",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -990000
+    },
+    {
+      "_id": "req_filtro_combinado",
+      "_type": "request",
+      "parentId": "fld_filtros",
+      "name": "GET ?tipo=1&alerta=CRITICO (combinado)",
+      "description": "Espera 200 com as ordens que atendem aos dois filtros ao mesmo tempo.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/ordens?tipo=1&alerta=CRITICO",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -989000
+    },
+    {
+      "_id": "req_erro_dup",
+      "_type": "request",
+      "parentId": "fld_validacoes",
+      "name": "POST codigoOrdem duplicado -> 400",
+      "description": "Espera 400. OP001 ja existe (vem do docs/banco.sql) e o codigo da ordem e unico.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/ordens",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigoOrdem\": \"OP001\",\n  \"codigoProduto\": \"PROD-A\",\n  \"tipoProduto\": 1,\n  \"quantidadeProduzida\": 10,\n  \"custoUnitarioBase\": 50,\n  \"estoqueInicial\": 100\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -988000
+    },
+    {
+      "_id": "req_erro_tipo",
+      "_type": "request",
+      "parentId": "fld_validacoes",
+      "name": "POST tipoProduto invalido -> 400",
+      "description": "Espera 400. Apenas 1, 2 ou 3 sao aceitos.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/ordens",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigoOrdem\": \"OP900\",\n  \"codigoProduto\": \"PROD-A\",\n  \"tipoProduto\": 9,\n  \"quantidadeProduzida\": 10,\n  \"custoUnitarioBase\": 50,\n  \"estoqueInicial\": 100\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -987000
+    },
+    {
+      "_id": "req_erro_falta",
+      "_type": "request",
+      "parentId": "fld_validacoes",
+      "name": "POST sem estoqueInicial -> 400",
+      "description": "Espera 400. No POST os seis campos de entrada sao obrigatorios.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/ordens",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigoOrdem\": \"OP901\",\n  \"codigoProduto\": \"PROD-A\",\n  \"tipoProduto\": 1,\n  \"quantidadeProduzida\": 10,\n  \"custoUnitarioBase\": 50\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -986000
+    },
+    {
+      "_id": "req_erro_negativo",
+      "_type": "request",
+      "parentId": "fld_validacoes",
+      "name": "POST quantidade negativa -> 400",
+      "description": "Espera 400. A quantidade produzida nao pode ser negativa.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/ordens",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigoOrdem\": \"OP902\",\n  \"codigoProduto\": \"PROD-A\",\n  \"tipoProduto\": 1,\n  \"quantidadeProduzida\": -5,\n  \"custoUnitarioBase\": 50,\n  \"estoqueInicial\": 100\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -985000
+    },
+    {
+      "_id": "req_erro_custo",
+      "_type": "request",
+      "parentId": "fld_validacoes",
+      "name": "POST custoUnitarioBase zero -> 400",
+      "description": "Espera 400. O custo unitario base deve ser maior que zero.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/ordens",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigoOrdem\": \"OP903\",\n  \"codigoProduto\": \"PROD-A\",\n  \"tipoProduto\": 1,\n  \"quantidadeProduzida\": 10,\n  \"custoUnitarioBase\": 0,\n  \"estoqueInicial\": 100\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -984000
+    },
+    {
+      "_id": "req_erro_get404",
+      "_type": "request",
+      "parentId": "fld_validacoes",
+      "name": "GET ordem inexistente -> 404",
+      "description": "Espera 404.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/ordens/NAOEXISTE",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -983000
+    },
+    {
+      "_id": "req_erro_put404",
+      "_type": "request",
+      "parentId": "fld_validacoes",
+      "name": "PUT ordem inexistente -> 404",
+      "description": "Espera 404.",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/ordens/NAOEXISTE",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"quantidadeProduzida\": 10\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -982000
+    },
+    {
+      "_id": "req_erro_put400",
+      "_type": "request",
+      "parentId": "fld_validacoes",
+      "name": "PUT tipoProduto invalido -> 400",
+      "description": "Espera 400. A validacao tambem vale na atualizacao.",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/ordens/OP001",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"tipoProduto\": 7\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -981000
+    },
+    {
+      "_id": "req_erro_del404",
+      "_type": "request",
+      "parentId": "fld_validacoes",
+      "name": "DELETE ordem inexistente -> 404",
+      "description": "Espera 404.",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/ordens/NAOEXISTE",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -980000
+    },
+    {
+      "_id": "req_relatorio",
+      "_type": "request",
+      "parentId": "fld_relatorios",
+      "name": "GET relatorio consolidado",
+      "description": "Espera 200 com totalOrdens, estoquePorTipo, mediaCustoTotalPorOrdem, ordemMaisCara, ordemMaisBarata, quantidadeAlertas e porProduto.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/relatorios/ordens",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "metaSortKey": -979000
+    }
+  ]
+}
